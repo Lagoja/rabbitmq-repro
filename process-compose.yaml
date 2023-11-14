@@ -1,0 +1,3 @@
+processes:
+  rabbitmq:
+    command: devbox run rabbitmq

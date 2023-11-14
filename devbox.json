@@ -1,0 +1,67 @@
+{
+  "packages": {
+    "path:devbox/flakes/frontend#yarn": {},
+    "path:devbox/flakes/frontend#node": {},
+    "path:devbox/flakes/frontend#node-gyp": {},
+    "path:devbox/flakes/beam#elixir": {},
+    "path:devbox/flakes/beam#rabbitmq": {},
+    "path:devbox/flakes/native-build-support#libclang-lib": {},
+    "path:devbox/flakes/native-build-support#icu": {},
+    "darwin.apple_sdk.frameworks.CoreFoundation": {
+      "platforms": [
+        "aarch64-darwin",
+        "x86_64-darwin"
+      ]
+    },
+    "darwin.apple_sdk.frameworks.CoreServices": {
+      "platforms": [
+        "aarch64-darwin",
+        "x86_64-darwin"
+      ]
+    },
+    "rustup": "latest",
+    "libiconv": "latest",
+    "pkg-config": "latest",
+    "wasm-pack": "latest",
+    "wasm-bindgen-cli": "0.2.78",
+    "postgresql": "14.7",
+    "google-cloud-sdk": "latest",
+    "stripe-cli": "latest",
+    "cloudflared": "latest",
+    "autossh": "latest",
+    "python310Packages.mitmproxy": "9.0.1",
+    "rnix-lsp": "latest",
+    "nixpkgs-fmt": "latest"
+  },
+  "env": {
+    "CARGO_HOME": "$PWD/.devbox/virtenv/cargo",
+    "CARGO_NET_GIT_FETCH_WITH_CLI": "true",
+    "CLOUDSDK_CONFIG": "$PWD/.devbox/virtenv/gcloud",
+    "ERL_AFLAGS": "-kernel shell_history enabled",
+    "GOOGLE_APPLICATION_CREDENTIALS": "$PWD/.devbox/virtenv/gcloud/application_default_credentials.json",
+    "HEX_HOME": "$PWD/.devbox/virtenv/hex",
+    "LIBCLANG_PATH": "$PWD/.devbox/nix/profile/default/lib",
+    "MIX_HOME": "$PWD/.devbox/virtenv/mix",
+    "RABBITMQ_ENABLED_PLUGINS_FILE": "$PWD/.devbox/virtenv/rabbitmq/enabled_plugins",
+    "RABBITMQ_LOGS": "-",
+    "RABBITMQ_LOG_BASE": "$PWD/.devbox/virtenv/rabbitmq/log",
+    "RABBITMQ_MNESIA_BASE": "$PWD/.devbox/virtenv/rabbitmq/data",
+    "RABBITMQ_NODENAME": "rabbit@localhost",
+    "RUSTUP_TOOLCHAIN": "1.70.0"
+  },
+  "shell": {
+    "scripts": {
+      "backend": "iex -S mix phx.server",
+      "cloudflare-tunnel": "cloudflared tunnel --no-autoupdate run --token $(cat $PWD/.devbox/virtenv/cloudflared/tunnel-token)",
+      "frontend": "yarn install && yarn start",
+      "frontend.ssl": "yarn install && yarn start:ssl",
+      "https_proxy": "mitmdump --mode reverse:http://local.surferseo.com:4000 --listen-port 4443",
+      "rabbitmq": "rabbitmq-server",
+      "stripe": "XDG_CONFIG_HOME=$PWD/.devbox/virtenv stripe listen --forward-to localhost:4000/api/v1/stripe",
+      "surfer-prod-tunnels": "autossh -M 0 -T -N surfer-tunnels-production"
+    },
+    "init_hook": [
+      "[[ -f .env.frontend.dev ]] && { set -a; source ./.env.frontend.dev; set +a; } || return 0"
+    ]
+  }
+}
